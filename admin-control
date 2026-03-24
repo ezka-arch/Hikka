@@ -2,25 +2,24 @@
 from .. import loader, utils
 
 @loader.tds
-class admib(loader.Module):
-    """sudo access management"""
-    strings = {"name": "sudo"}
+class AdminControlMod(loader.Module):
+    """Управление доступом"""
+    strings = {"name": "AdminControl"}
 
     async def client_ready(self, client, db):
         self._db = db
 
     @loader.unrestricted
-    async def sudocmd(self, message):
-        """add user to sudo via reply"""
+    async def addadmincmd(self, message):
+        """Добавить админа через реплей"""
         reply = await message.get_reply_message()
         if not reply:
-            return await utils.answer(message, "reply to someone!")
+            return await utils.answer(message, "Реплейни на того, кого хочешь добавить!")
         
-        sudo_users = self._db.get("hikka.main", "sudo", [])
-        if reply.sender_id not in sudo_users:
-            sudo_users.append(reply.sender_id)
-            self._db.set("hikka.main", "sudo", sudo_users)
-            await utils.answer(message, f"user {reply.sender_id} added to sudo")
+        admins = self._db.get("hikka.main", "sudo", [])
+        if reply.sender_id not in admins:
+            admins.append(reply.sender_id)
+            self._db.set("hikka.main", "sudo", admins)
+            await utils.answer(message, f"Красава, ID {reply.sender_id} теперь в админах")
         else:
-            await utils.answer(message, "already in sudo")
-
+            await utils.answer(message, "Этот бро уже и так админ")
